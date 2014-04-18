@@ -2,11 +2,13 @@ package hamleditor.editors;
 
 import org.eclipse.jface.text.rules.*;
 
-public class TagRule extends MultiLineRule {
+public class TagRule extends SingleLineRule {
 
 	public TagRule(IToken token) {
-		super("%", "\n", token);
+		super("%", " ", token);
 	}
+	
+	/*
 	protected boolean sequenceDetected(
 		ICharacterScanner scanner,
 		char[] sequence,
@@ -27,5 +29,26 @@ public class TagRule extends MultiLineRule {
 			scanner.unread();
 		}
 		return super.sequenceDetected(scanner, sequence, eofAllowed);
+	}
+	
+	*/
+	
+	protected boolean endSequenceDetected(
+			ICharacterScanner scanner) {
+		int c = scanner.read();
+		
+		//System.out.print(c);
+		//System.out.print((char)c);
+		
+		if (c == ' ' || c == '\t' || c == '\n' || c == '\r') {
+			//scanner.unread();
+			//System.out.print("space");
+			return true;
+		} else if (c == '=') {
+			return true;
+		}
+		
+		scanner.unread();
+		return super.endSequenceDetected(scanner);
 	}
 }
